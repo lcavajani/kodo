@@ -1,0 +1,9 @@
+service:
+  type: NodePort
+  port: 9100
+  targetPort: 9100
+  nodePort: 30091
+
+tolerations:
+  - effect: NoSchedule
+    operator: Exists

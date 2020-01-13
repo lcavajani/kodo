@@ -1,0 +1,83 @@
+---
+namespace: monitoring
+repositories:
+  stable:
+    url: https://kubernetes-charts.storage.googleapis.com
+  elastic:
+    url: https://helm.elastic.co
+  rancher:
+    git: https://github.com/rancher/local-path-provisioner
+    path: deploy
+charts:
+  # LOCAL-PATH-PROVISIONER
+  local-path-provisioner:
+    repository: rancher
+    chart: chart
+    version: master
+    hooks:
+      pre_install:
+        # Workaround as PSP are not available in chart
+        - kubectl apply -f local-path-provisioner/privileged-cr.yaml
+    files:
+      - local-path-provisioner/local-path-provisioner-values.yaml
+  # INGRESS CONTROLLER
+  nginx-ingress:
+    repository: stable
+    chart: nginx-ingress
+    files:
+      - nginx-ingress/nginx-ingress-values.yaml
+    hooks:
+      pre_install:
+        # Bugs Workaround, hostPorts are not in PSP...
+        - kubectl apply -f nginx-ingress/privileged-cr.yaml
+  # PROMETHEUS
+  prometheus:
+    repository: stable
+    chart: prometheus
+    files:
+      - prometheus/prometheus-values.yaml
+  # PROMETHEUS BLACKBOX-EXPORTER
+  prometheus-blackbox-exporter:
+    repository: stable
+    chart: prometheus-blackbox-exporter
+    files:
+      - prometheus-blackbox-exporter/prometheus-blackbox-exporter-values.yaml
+  # GRAFANA
+  grafana:
+    repository: stable
+    chart: grafana
+    files:
+      - grafana/grafana-values.yaml
+    hooks:
+      post_install:
+        - kubectl -n monitoring apply -f https://raw.githubusercontent.com/SUSE/caasp-monitoring/master/grafana-dashboards-caasp-cluster.yaml
+        - kubectl -n monitoring apply -f https://raw.githubusercontent.com/SUSE/caasp-monitoring/master/grafana-dashboards-caasp-etcd-cluster.yaml
+        - kubectl -n monitoring apply -f https://raw.githubusercontent.com/SUSE/caasp-monitoring/master/grafana-dashboards-caasp-namespaces.yaml
+        - kubectl -n monitoring apply -f https://raw.githubusercontent.com/SUSE/caasp-monitoring/master/grafana-dashboards-caasp-nodes.yaml
+        - kubectl -n monitoring apply -f https://raw.githubusercontent.com/SUSE/caasp-monitoring/master/grafana-dashboards-caasp-pods.yaml
+  # ELASTICSEARCH - MASTER
+  elasticsearch-master:
+    repository: elastic
+    chart: elasticsearch
+    files:
+      - elasticsearch/elasticsearch-master-values.yaml
+  # ELASTICSEARCH - DATA
+  elasticsearch-data:
+    repository: elastic
+    chart: elasticsearch
+    files:
+      - elasticsearch/elasticsearch-data-values.yaml
+  # KIBANA
+  kibana:
+    repository: elastic
+    chart: kibana
+    hooks:
+      pre_install:
+        - kubectl apply -f kibana/kibana-serviceaccount.yaml
+    files:
+      - kibana/kibana-values.yaml
+  # METRICS-SERVER
+  metrics-server:
+    repository: stable
+    chart: metrics-server
+    files: [metrics-server/metrics-server-values.yaml]

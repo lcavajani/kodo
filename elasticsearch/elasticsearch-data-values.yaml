@@ -1,0 +1,26 @@
+---
+clusterName: "elasticsearch"
+nodeGroup: "data"
+
+replicas: 1
+
+roles:
+  master: "false"
+  ingest: "true"
+  data: "true"
+
+persistence:
+  enabled: true
+
+rbac:
+  create: true
+
+podSecurityPolicy:
+  create: true
+
+volumeClaimTemplate:
+  accessModes: [ "ReadWriteOnce" ]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 20Gi

@@ -1,0 +1,27 @@
+# Enable the creation of pod security policy
+podSecurityPolicy:
+  enabled: true
+
+# Create a specific service account
+serviceAccount:
+  create: true
+
+# Publish services on port HTTP/80
+# Publish services on port HTTPS/443
+# These services are exposed on the nodes,
+# There is a TCP LB in front of these nodes
+controller:
+  kind: DaemonSet
+  daemonset:
+    useHostPort: true
+    hostPorts:
+      http: 80
+      https: 443
+  service:
+    enableHttp: true
+    enableHttps: true
+#    externalTrafficPolicy: "Local"
+#    type: NodePort
+#    nodePorts:
+#      http: 32080
+#      https: 32443

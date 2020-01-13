@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: netdata-nodeport
+  namespace: monitoring
+spec:
+  ports:
+  - name: http
+    port: 19999
+    protocol: TCP
+    targetPort: http
+    nodePort: 30099
+  selector:
+    app: netdata
+    release: netdata
+    role: master
+  sessionAffinity: None
+  type: NodePort

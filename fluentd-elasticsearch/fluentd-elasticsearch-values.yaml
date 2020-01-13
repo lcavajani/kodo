@@ -1,0 +1,11 @@
+elasticsearch:
+  host: 192.168.73.165.omg.howdoi.website
+  port: 30092
+  sslVerify: false
+podSecurityPolicy:
+  annotations:
+    apparmor.security.beta.kubernetes.io/allowedProfileNames: runtime/default
+    apparmor.security.beta.kubernetes.io/defaultProfileName: runtime/default
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+  enabled: true

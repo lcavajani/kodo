@@ -1,0 +1,13 @@
+ingress:
+  enabled: false
+
+rbac:
+  create: true
+  pspEnabled: true
+
+master:
+  database:
+    persistence: false
+
+  alarms:
+    persistence: false

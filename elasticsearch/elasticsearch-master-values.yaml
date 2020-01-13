@@ -1,0 +1,30 @@
+clusterName: elasticsearch
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  enabled: true
+  hosts:
+  - elasticsearch-master.192.168.73.165.omg.howdoi.website
+  path: /
+nodeGroup: master
+persistence:
+  enabled: true
+podSecurityPolicy:
+  create: true
+rbac:
+  create: true
+replicas: 1
+roles:
+  data: 'false'
+  ingest: 'false'
+  master: 'true'
+service:
+  nodePort: '30092'
+  type: NodePort
+volumeClaimTemplate:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: local-path

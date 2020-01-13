@@ -1,0 +1,28 @@
+alertmanager: {enabled: false}
+extraScrapeConfigs: "- job_name: kobay_prometheus-node-exporter\n  relabel_configs:\n\
+  \  - source_labels:\n    - __address__\n    target_label: kubernetes_node\n  - replacement:\
+  \ $1:30091\n    source_labels:\n    - __address__\n    target_label: __address__\n\
+  \  scrape_interval: 5s\n  static_configs:\n  - targets:\n    - 192.168.73.128\n  \
+  \  - 192.168.72.102\n    - 192.168.72.182\n    - 192.168.73.114\n- job_name: kobay_kube-state-metrics\n\
+  \  relabel_configs:\n  - source_labels:\n    - __address__\n    target_label: kubernetes_node\n\
+  \  - replacement: $1:30080\n    source_labels:\n    - __address__\n    target_label:\
+  \ __address__\n  scrape_interval: 5s\n  static_configs:\n  - targets:\n    - 192.168.73.128\n\
+  \    - 192.168.72.102\n    - 192.168.72.182\n    - 192.168.73.114\n- job_name: cap_test-app\n\
+  \  metrics_path: /probe\n  params:\n    module:\n    - http_2xx\n  relabel_configs:\n\
+  \  - source_labels:\n    - __address__\n    target_label: __param_target\n  - source_labels:\n\
+  \    - __param_target\n    target_label: instance\n  - replacement: prometheus-blackbox-exporter:9115\n\
+  \    target_label: __address__\n  scrape_interval: 5s\n  static_configs:\n  - targets:\n\
+  \    - http://192.168.10.117.omg.howdoi.website\n"
+kubeStateMetrics: {enabled: false}
+nodeExporter: {enabled: false}
+pushgateway: {enabled: false}
+server:
+  ingress:
+    annotations: {kubernetes.io/ingress.class: nginx}
+    enabled: true
+    hosts: [prometheus-server.192.168.73.165.omg.howdoi.website]
+  persistentVolume:
+    accessModes: [ReadWriteOnce]
+    enabled: true
+    storageClass: local-path
+  service: {nodePort: 30090, servicePort: 80, type: NodePort}

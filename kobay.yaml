@@ -1,0 +1,44 @@
+---
+namespace: monitoring
+repositories:
+  kiwigrid:
+    url: https://kiwigrid.github.io
+  stable:
+    url: https://kubernetes-charts.storage.googleapis.com
+  kobay-doktor:
+    git: https://github.com/lcavajani/kobay-doktor
+    path: charts
+charts:
+  # FLUENTD-ELASTICSEARCH
+  fluentd-elasticsearch:
+    chart: fluentd-elasticsearch
+    files:
+    - fluentd-elasticsearch/fluentd-elasticsearch-values.yaml
+    repository: kiwigrid
+  # KUBE-STATE-METRICS
+  kube-state-metrics:
+    chart: kube-state-metrics
+    files:
+    - kube-state-metrics/kube-state-metrics-values.yaml
+    repository: stable
+  # PROMETHEUS-NODE-EXPORTER
+  prometheus-node-exporter:
+    chart: prometheus-node-exporter
+    files:
+    - prometheus-node-exporter/prometheus-node-exporter-values.yaml
+    repository: stable
+  # NETDATA
+  netdata:
+    repository: kobay-doktor
+    chart: netdata
+    version: master
+    files:
+    - netdata/netdata-values.yaml
+    hooks:
+      post_install:
+        - kubectl apply -f netdata/netdata-nodeport.yaml
+  # METRICS-SERVER
+  metrics-server:
+    chart: metrics-server
+    files:
+    - metrics-server/metrics-server-values.yaml
